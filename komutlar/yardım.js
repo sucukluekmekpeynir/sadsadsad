@@ -1,119 +1,67 @@
 const Discord = require('discord.js');
-const ayarlar = require('../ayarlar.json');
-const { stripIndents, oneLine } = require('common-tags');
-const client = new Discord.Client();
 
-var prefix = ayarlar.prefix;
-  
-exports.run = (bot, message, params) => {
-  exports.run = (client, message, params) => {
-  if (!params[0]) {
-    const commandNames = Array.from(client.commands.keys());
-    const longest = commandNames.reduce((long, str) => Math.max(long, str.length), 0);
-    let help = new Discord.RichEmbed()
-    .setAuthor(`${bot.user.username} | Komutlar`, bot.user.avatarURL)
-    .setDescription(`[Bir komut hakkında ayrıntılı bilgi için, "[${ayarlar.prefix}yardım <komut adı>](https://www.google.com.tr/)"]`)
-    .setColor("RANDOM")
-    .addBlankField()
-    .addField("_» Kullanıcı Komutları «_", `${bot.commands.filter(cmd => cmd.help.category === 'kullanıcı').map(cmd => `[${cmd.help.name}](https://www.google.com.tr/): ${cmd.help.description}`).join("\n")}`)
-    .addField("_» Sunucu Komutları «_", `${bot.commands.filter(cmd => cmd.help.category === 'sunucu').map(cmd => `[${cmd.help.name}](https://www.google.com.tr/): ${cmd.help.description}`).join("\n")}`)
-    .addField("_» Bot Komutları «_", `${bot.commands.filter(cmd => cmd.help.category === 'bot').map(cmd => `[${cmd.help.name}](https://www.google.com.tr/): ${cmd.help.description}`).join("\n")}`)
-    .addField("_» Eğlence Komutları «_", `${bot.commands.filter(cmd => cmd.help.category === 'eğlence').map(cmd => `[${cmd.help.name}](https://www.google.com.tr/): ${cmd.help.description}`).join("\n")}`)
-    .addField("_» Moderasyon Komutları «_", `${bot.commands.filter(cmd => cmd.help.category === 'moderasyon').map(cmd => `[${cmd.help.name}](https://www.google.com.tr/): ${cmd.help.description}`).join("\n")}`)
-    .addField("_» Profil Sistemi «_", `[__YAKINDA EKLENECEK!__](https://www.google.com.tr/)`)
-    .addField(`_» Müzik Komutları «_`, stripIndents`
-		[oynat](https://www.google.com.tr/): Şarkı çalar. (Eğer hiç bir şarkı ismi yazmaz sadece komutu kullanır iseniz otomatik olarak en iyi şarkılardan sunar.)
-		[geç](https://www.google.com.tr/): Sıradaki şarkıya geçer.
-		[kuyruk](https://www.google.com.tr/): Şarkı kuyruğunu gösterir.
-		[duraklat](https://www.google.com.tr/): Şarkıyı duraklatır.
-		[devamet](https://www.google.com.tr/): Duraklatılmış şarkıyı devam ettirir.
-		[ses](https://www.google.com.tr/): Şarkının sesini ayarlar.
-		[durdur](https://www.google.com.tr/): Şarkıyı kapatır.
-		`)
-    .addField("_» Ayarlamalı Sistemler «_", `${bot.commands.filter(cmd => cmd.help.category === 'ayarlar').map(cmd => `[${cmd.help.name}](https://www.google.com.tr/): ${cmd.help.description}`).join("\n")}`)
-    .addField("_» Genel Komutlar «_", `${bot.commands.filter(cmd => cmd.help.category === 'genel').map(cmd => `[${cmd.help.name}](https://www.google.com.tr/): ${cmd.help.description}`).join("\n")}`)
-    .addField("_» Bot İletişim/Destek «_", `${bot.commands.filter(cmd => cmd.help.category === 'iletisim').map(cmd => `[${cmd.help.name}](https://www.google.com.tr/): ${cmd.help.description}`).join("\n")}`)
-    .addField(`» ${bot.user.username} | Destek Sistemi Kurulumu:`, `1- **destek-kanalı** isminde bir metin/yazı kanalı oluşturunuz. \n2- **Destek Ekibi** isminde bir rol oluşturunuz. \n\nBunları yaptıysanız **destek-kanalı** ismindeki metin/yazı kanalına mesaj yazdığınızda otomatik olarak destek talebi açılacaktır. \nDestek Sistemi artık sunucunuzda aktiftir!`)
-    .setFooter(`${bot.user.username} | Gelişmiş Ve İşlevsel Sistemler!`, bot.user.avatarURL)
-  if (message.channel.type !== 'dm') {
-    const ozelmesajkontrol = new Discord.RichEmbed()
-  .setColor("RANDOM")
-  .setAuthor(`${bot.user.username} | Yardım`, bot.user.avatarURL)
-  .setTitle(`_» Özel Mesajlarını Kontrol Et! «_`)
-  .setDescription(`_Komutlarımı özel mesaj olarak gönderdim!_`);
-    message.channel.sendEmbed(ozelmesajkontrol) }
-    message.author.sendEmbed(help);
-    /*message.author.sendCode('asciidoc', stripIndents`
-    = Rytvex | Yardım =
-    
-    [Bir komut hakkında ayrıntılı bilgi için, "${ayarlar.prefix}yardım <komut adı>"]
+exports.run = (client, message, args) => {
 
-    = Kullanıcı Komutları =
-    ${bot.commands.filter(cmd => cmd.help.category === 'kullanıcı').map(cmd => `${cmd.help.name} = ${cmd.help.description}`).join(" \n\n")}
-    
-    = Bot Komutları =
-    ${bot.commands.filter(cmd => cmd.help.category === 'bot').map(cmd => `${cmd.help.name} = ${cmd.help.description}`).join("\n\n")}
+  let pages = [
+               '**Başlangıç**\n\n\n' + ' arkadaşlar benim adım ahmet botumu eklemek istiyorsanız s!davet\n Botumu Kulandığınız İcin Şimdiden Teşekürler. s!tavsiye bütün tavsiyenizi bekliyorum \n \n Botun Resimli Giriş Cıkış Mesajlarını Atmasını İstiyorsanız : \n s!giriş-çıkış adında kanal açın \n \n \n⬅  |  ➡ Bu Emojılere Tıklayarak Sayfayı Değiştirebilirsiniz',
+              '**Ana Komutlar**\n\n\n' + 's!sunucubilgi = Sunucu Hakkında Bilgi Verir. \ns!hesapla = istediğiniz miktarı hesaplar. ns!atatürkçerçeve = kendi profilinizin üstüne atatürkün resminide koyar.  \ns!atatürk = Atatürk Giflerini Atar. \ns!dolar = Doların Alış Satış Fiyatını Gösterir. \ns!ping = Botun Ping Durumun Gösterir. \ns!bilgi = Bot Hakkında Bilgi Verir.  \ns!davet = Botun Davet Linkini Atar.. ',
+              '**Müzik Komutları**\n\n\n' + 's!oynat = Müzik Açmanıza Yarar. \ns!radyo = radyo .D \ns!geç = Açılan Müziği Kuyrukta Olan Başka Müziklere Geçer. \ns!kapat = Çalınan Müziği Kapatır.\ns!ses = Çalınan Müziğin Sesini Değiştirir.  \ns!durdur = Çalınan Müziği Durdurur. \ns!devam = Durdurulan Son Müziği Devam Ettirir. \ns!kuyruk = Kuyrukta Olan Müzikleri Gösterir.',
+              '**Eğlence**\n\n\n' + 's!winner = Profil Fotoğrafınıza Winner Efekti EKler. \ns!koş = koşma gif gösterir .D..  \ns!tr = profil resminize türk bayrağı ekelr. \ns!aze = profil resminize azeri bayrak ekler. \ns!slots = oyun kumar . \ns!dcnitro = s!dcintro yazmanız yeterli. \ndefkarölçer = efkarnızı ölçer ettiketleyin kimin efkarını ölçenenizi efkar-vs ile karıştırmayın .\ns!efkar-vs = efkarınızı ölçer 2 kişiyi ettiketleyin. \ns!csgo = csgo oynarsınız. \ns!8ball = 8ball sikoru gösterir. \ns!bravery = resminizin üstüne bravery olur. \ns!dolar  = doların fiyarını gösterir. \ns!youtube  = youtube aradınız videoları filan gösterir. \ns!hasebin   = göremek istediğiniz şeyi yazarsınız oda size bir site atar yazdığınız şey oraya gider. \ns!mcödüş  = minecraft aldığınız başarlıları gösterir. \ns!fortine  = fortinedeki hesabınızı gösterir. \ns!simit  = simit yersiniz. \ns!steamoyun   = steam daki oyun fiyatlarını filan gösterir. \ns!tersavatar = avatarınızı test gösterir. \ns!ailemiz  = ailenizi gösterir sunucuda. \ns!gifara = istediğin gifi arar kedi filan. \ns!kafasınasık = İstediğiniz Birisinin Kafasına sıkar. \ns!sigara = Sigara Yakar \ns!slots = Slots oyunu oynatır \ns!aşkölçer [@Kulanıcı] = AşkÖlçer Anlatmaya Gerek Yok :D  \ns!wasted = Profil Fotonuza Wasted Efekti Ekler \ns!atatürk = Atatürk Fotoraflarını Gösterir \ns!steamoyun [oyun adı] = Steamdan Oyun Bilgilerini Gösterir\ns!atam = Proflinize Atatürk Efekti Ekler \ns!espri = Espri Yapar  \ns!sniper = Profline Resmine Sniper Efekti Ekler \ns!hacked = Profline Resmine Hacker Efekti Ekler \ns!köpek = Köpek Resimleri Atar \ns!kedi = Kedi Resimleri Atar  \ns!havadurumu [Şehir] = Seçtiğiniz Şehrin Havadurumunu Gösterir  \ns!asci [yazı] = Yazdığın yazıyı büyük bir şekilde yazar',
+              '**Yetkili**\n\n\n ' + 's!söv = İstediğiniz Kişiye Söver Şaka Amaçlıdır.  \ns!kanalbilgi = sunucunuzun bilgilerini filan gösterir işte. \ns!top10 = botun oldğu en fazla kişi olan 10 sunucuyu gösterir.\ns!ticket = kulanmanız yeterli .D \ns!yetkilerim = sunucuda rolünüzün yetkilerini gösterir. \ns!seviye = seviyenizi gösterir. \ns!talep = talep yazın size oda acar yetkiler bakar taleplerinize.  \ns!havadurumu = hava durumunu gösterir. \ns!afk = afk moda gecersiniz. \ns!!yavaş-mod = en fazla 120 sayniye s!yavaş-mod sayı yazmanız yeterli. \ns!sayaç = sayaç kanalı oluşturun ve s!sayac miktar yazın.  \ns!temizle [sayı] = Belirlenen Miktarda Sayı Siler Max 99 \ns!kick = ettiketlediğiniz kişiyi sunucudan atar sebebinide yazın. [mod-log] diye metin kanal acın.  \ns!sunucutanıt = Yetkililer icin  Yetkisi OLmayan Biri Yapınca Calışmaz \ns!ban [@Kulanıcı] {sebebi] =Belirlediğiniz Kişiyi Sunucudan Banlar \ns!kilit [süre] kanalı Belirlediğiniz süreye kadar Kilitler',
+              '**Yapımcılarım **\n\n\n ' + 'Yapımcım : Süleyman Yıldız',
+              ];
+  let page = 1;
 
-    = Moderasyon Komutları =
-    ${bot.commands.filter(cmd => cmd.help.category === 'moderasyon').map(cmd => `${cmd.help.name} = ${cmd.help.description}`).join("\n\n")}
+  const embed = new Discord.RichEmbed()
+    .setColor('RANDOM')
+    .setThumbnail('http://oi51.tinypic.com/2jg4gg6.jpg')
+    .setFooter(`Sayfa ${page} / ${pages.length}`)
+    .setDescription(pages[page-1])
+  message.channel.send(embed).then(msg => {
 
-    = Profil Sistemi =
-    YAKINDA EKLENECEK!
-    
-    = Ayarlamalı Sistemler =
-    ${bot.commands.filter(cmd => cmd.help.category === 'ayarlar').map(cmd => `${cmd.help.name} = ${cmd.help.description}`).join("\n\n")}
-    
-    = Genel Komutlar =
-    ${bot.commands.filter(cmd => cmd.help.category === 'genel').map(cmd => `${cmd.help.name} = ${cmd.help.description}`).join("\n\n")}
+  msg.react('⬅')
+  .then(r => {
+    msg.react('➡')
 
-    = Bot İletişim/Destek =
-    ${bot.commands.filter(cmd => cmd.help.category === 'iletisim').map(cmd => `${cmd.help.name} = ${cmd.help.description}`).join(" \n")}
-   `)*/
-  } else {
-    let command = params[0];
-    if (client.commands.has(command)) {
-      command = client.commands.get(command);
-      const ozelyardim = new Discord.RichEmbed()
-      .setColor("RANDOM")
-      .addField(`Komut`, `${command.help.name}`)
-      .addField(`Açıklama`, `${command.help.description ? command.help.description : "Bilinmiyor."}`)
-      .addField(`Kategorisi`, `${command.help.category ? command.help.category : "Bulunmuyor."}`)
-      .addField(`Kullanabilmek için Gerekli Yetki`, `${command.conf.permLevel}`)
-      .addField(`Doğru Kullanım`, `${command.help.usage ? command.help.usage : "Bilinmiyor."}`)
-      .addField(`Komutun Diğer Adları`, `${command.conf.aliases ? command.conf.aliases : "Bulunmuyor."}`)
-      message.channel.sendEmbed(ozelyardim);
-    }}}
+      //Filterd
+      const backwardsFilter = (reaction, user) => reaction.emoji.name === '⬅' && user.id === message.author.id;
+      const forwardsFilter = (reaction, user) => reaction.emoji.name === '➡' && user.id === message.author.id;
+
+      const backwards = msg.createReactionCollector(backwardsFilter, { time: 100000 });
+      const forwards = msg.createReactionCollector(forwardsFilter, { time: 100000 });
+
+      forwards.on('collect', r => {
+        if(page === pages.length) return;
+        page++;
+        embed.setDescription(pages[page-1]);
+        embed.setColor('RANDOM')
+        embed.setFooter(`Sayfa ${page} / ${pages.length}`)
+        msg.edit(embed)
+      })
+      backwards.on('collect', r => {
+        if(page === 1) return;
+        page--;
+        embed.setColor('RANDOM')
+        embed.setDescription(pages[page-1]);
+        embed.setFooter(`Sayfa ${page} / ${pages.length}`)
+        msg.edit(embed)
+      })
+
+    })
+   message.react(":white_check_mark: ")
+  })
 };
-  
-/*if (message.channel.type !== 'dm') {
-  const kontrol = new Discord.RichEmbed()
-  .setColor("RANDOM")
-  .setAuthor(`Özel Mesajlarını Kontrol Et!`)
-  .setDescription(`_Komutlarımı özel mesaj olarak gönderdim!_`)
-  message.channel.send(kontrol)};
-    let help = new Discord.RichEmbed()
-    .setAuthor(`Better Bot | Komutlar`)
-    .setColor("RANDOM")
-    .addField("_» Kullanıcı Komutları «_", `${bot.commands.filter(cmd => cmd.help.category === 'kullanıcı').map(cmd => `**${cmd.help.name}**: ${cmd.help.description}`).join(" \n")}`)
-    .addField("_» Bot Komutları «_", `${bot.commands.filter(cmd => cmd.help.category === 'bot').map(cmd => `**${cmd.help.name}**: ${cmd.help.description}`).join(" \n")}`)
-    .addField("_» Profil Sistemi «_", `${bot.commands.filter(cmd => cmd.help.category === 'profile').map(cmd => `**${cmd.help.name}**: ${cmd.help.description}`).join(" \n")}`)
-    .addField("_» Ayarlamalı Sistemler «_", `${bot.commands.filter(cmd => cmd.help.category === 'ayarlar').map(cmd => `**${cmd.help.name}**: ${cmd.help.description}`).join(" \n")}`)
-    .addField("_» Genel Komutlar «_", `${bot.commands.filter(cmd => cmd.help.category === 'genel').map(cmd => `**${cmd.help.name}**: ${cmd.help.description}`).join(" \n")}`)
-    .addField("_» Bot İletişim/Destek «_", `${bot.commands.filter(cmd => cmd.help.category === 'iletisim').map(cmd => `**${cmd.help.name}**: ${cmd.help.description}`).join(" \n")}`)
-    .setFooter(`Better Bot | Gelişmiş Ve İşlevsel Sistemler!`)
-    message.author.send(help);
-};*/
-  
+
+
 exports.conf = {
-  enabled: true,
-  guildOnly: false,
-  aliases: ['h', 'help', 'y'],
-  permLevel: `Yetki gerekmiyor.`
+enabled: true,
+guildOnly: true,
+aliases: ["help", "y", "h"],
+permLevel: 0
 };
 
 exports.help = {
-  name: 'yardım',
-  category: 'genel',
-  description: 'Tüm komutları listeler.',
-  usage: 'Belli bir komut için: r?yardım <komut adı> \nTüm komutlar için: r?yardım'
+name: 'yardım',
+description: 'Yardım Listesini Gösterir',
+usage: 'yardım'
 };
